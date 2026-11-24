@@ -1,0 +1,287 @@
+.sim {
+  color: var(--paper);
+  border-top: 1px solid var(--night-line);
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--night-line);
+}
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--night-line);
+}
+.seg button {
+  min-height: 36px;
+  padding: 0 14px;
+  color: var(--night-mute);
+  transition: background 0.3s, color 0.3s;
+}
+.seg button[aria-pressed="true"] {
+  background: var(--paper);
+  color: var(--ink);
+}
+.run {
+  min-height: 36px;
+  color: var(--signal-night);
+  border-bottom: 1px solid currentColor;
+}
+.run:disabled {
+  color: var(--night-mute);
+  cursor: progress;
+}
+
+/* ---------- state machine ---------- */
+.machine {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--night-line);
+}
+.machine li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 14px 0 16px;
+  font-size: clamp(18px, 1.8vw, 28px);
+  font-variation-settings: "wght" 300, "wdth" 85;
+  letter-spacing: -0.02em;
+  color: var(--night-mute);
+  transition: color 0.4s, font-variation-settings 0.6s var(--ease-out);
+}
+.machine li + li::before {
+  content: "→";
+  position: absolute;
+  left: -26px;
+  bottom: 20px;
+  font-size: 14px;
+  opacity: 0.4;
+}
+.machine li:first-child::before {
+  content: none;
+}
+.machine li span {
+  color: var(--night-mute);
+  font-size: 10px;
+  letter-spacing: 0.02em;
+}
+.machine li[data-on="true"] {
+  color: var(--paper);
+  font-variation-settings: "wght" 640, "wdth" 100;
+}
+.machine li[data-stuck="true"] {
+  color: #ff8a6a;
+}
+.machine li[data-stuck="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 16px;
+  bottom: -1px;
+  height: 2px;
+  background: #ff8a6a;
+  animation: blink 0.9s steps(2) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- waveform ---------- */
+.stage {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 26px 0;
+  border-bottom: 1px solid var(--night-line);
+}
+.wave {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 56px;
+  flex: 1;
+  max-width: 340px;
+}
+.wave span {
+  flex: 1;
+  height: 100%;
+  background: var(--night-mute);
+  transform: scaleY(0.05);
+  transform-origin: center;
+  transition: background 0.4s, transform 0.5s var(--ease-out);
+}
+.wave[data-state="listening"] span {
+  background: var(--paper);
+  animation: talk 0.9s ease-in-out infinite alternate;
+}
+.wave[data-state="thinking"] span {
+  background: var(--night-mute);
+  animation: think 1.2s ease-in-out infinite;
+}
+.wave[data-state="speaking"] span {
+  background: var(--signal-night);
+  animation: talk 0.7s ease-in-out infinite alternate;
+}
+/* stuck: audio is over, bars flatline but the colour still claims speaking */
+.wave[data-stuck="true"] span {
+  animation: none;
+  transform: scaleY(0.05);
+  background: #ff8a6a;
+}
+@keyframes talk {
+  0% {
+    transform: scaleY(0.08);
+  }
+  100% {
+    transform: scaleY(0.9);
+  }
+}
+@keyframes think {
+  0%,
+  100% {
+    transform: scaleY(0.05);
+  }
+  50% {
+    transform: scaleY(0.2);
+  }
+}
+.note {
+  color: var(--night-mute);
+  text-align: right;
+}
+
+/* ---------- transcript ---------- */
+.transcript {
+  padding: 18px 0 22px;
+  border-bottom: 1px solid var(--night-line);
+  min-height: 140px;
+}
+.tHead {
+  display: flex;
+  justify-content: space-between;
+  color: var(--night-mute);
+  margin-bottom: 12px;
+}
+.clock {
+  font-variant-numeric: tabular-nums;
+  color: var(--paper);
+}
+.transcript ul {
+  display: grid;
+  gap: 8px;
+}
+.transcript li {
+  display: grid;
+  grid-template-columns: 8ch 1fr;
+  gap: 12px;
+  font-family: var(--font-serif);
+  font-size: clamp(16px, 1.3vw, 20px);
+  line-height: 1.3;
+  animation: lineIn 0.6s var(--ease-out);
+}
+.transcript li .mono {
+  color: var(--night-mute);
+  padding-top: 4px;
+}
+.empty {
+  color: var(--night-mute);
+}
+@keyframes lineIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+/* ---------- range chart ---------- */
+.chart {
+  padding-top: 22px;
+}
+.chart figcaption {
+  color: var(--night-mute);
+  margin-bottom: 16px;
+}
+.rows {
+  position: relative;
+  padding-bottom: 26px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 8ch 1fr;
+  gap: 12px;
+  align-items: center;
+  height: 30px;
+}
+.rowLabel {
+  color: var(--night-mute);
+}
+.plot {
+  position: relative;
+  height: 100%;
+  background: linear-gradient(var(--night-line), var(--night-line)) left center / 100% 1px no-repeat;
+}
+.bar {
+  position: absolute;
+  top: 50%;
+  height: 10px;
+  transform: translateY(-50%);
+  border-radius: 4px;
+  outline-offset: 3px;
+}
+.row[data-mode="before"] .bar {
+  background: #6f6c65;
+}
+.row[data-mode="after"] .bar {
+  background: var(--signal-night);
+}
+.tip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  color: var(--paper);
+}
+.axis {
+  position: absolute;
+  left: calc(8ch + 12px);
+  right: 0;
+  bottom: 0;
+  height: 18px;
+  border-top: 1px solid var(--night-line);
+}
+.axis span {
+  position: absolute;
+  top: 6px;
+  transform: translateX(-50%);
+  color: var(--night-mute);
+  font-size: 10px;
+}
+
+@media (max-width: 700px) {
+  .machine li {
+    font-size: 16px;
+  }
+  .machine li + li::before {
+    content: none;
+  }
+  .stage {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .note {
+    text-align: left;
+  }
+  .seg button,
+  .run {
+    min-height: 44px;
+  }
+}

@@ -1,0 +1,245 @@
+.sim {
+  --who-a: var(--signal-night);
+  --who-b: #7fb7a4;
+  color: var(--paper);
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--night-line);
+  margin-bottom: 18px;
+}
+.tools {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  color: var(--night-mute);
+}
+.tools button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  color: var(--paper);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s, color 0.3s, opacity 0.3s;
+}
+.tools button:hover {
+  border-color: currentColor;
+}
+.tools button[aria-pressed="true"] {
+  color: var(--signal-night);
+  border-color: currentColor;
+}
+.tools button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.iRect,
+.iEllipse {
+  display: inline-block;
+  width: 10px;
+  height: 8px;
+  border: 1px solid currentColor;
+}
+.iEllipse {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.iText {
+  font-family: var(--font-serif);
+  font-size: 13px;
+  text-transform: none;
+}
+
+.panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--col-gap);
+}
+.paneWrap {
+  min-width: 0;
+}
+.paneHead {
+  display: flex;
+  justify-content: space-between;
+  color: var(--night-mute);
+  margin-bottom: 8px;
+}
+.swatch {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  vertical-align: 1px;
+}
+.swatch[data-who="a"],
+.peerTag[data-who="a"] {
+  background: var(--who-a);
+}
+.swatch[data-who="b"],
+.peerTag[data-who="b"] {
+  background: var(--who-b);
+}
+
+.pane {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  background: var(--paper);
+  color: var(--ink);
+  overflow: hidden;
+  touch-action: none;
+}
+.grid {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(rgba(18, 18, 17, 0.18) 1px, transparent 1px);
+  background-size: 16px 16px;
+  pointer-events: none;
+}
+
+.shape {
+  position: absolute;
+  left: 0;
+  top: 0;
+  cursor: grab;
+  outline: none;
+}
+.shape:active {
+  cursor: grabbing;
+}
+.shape[data-kind="rect"] {
+  background: var(--ink);
+}
+.shape[data-kind="ellipse"] {
+  background: var(--signal);
+  border-radius: 50%;
+}
+.shape[data-kind="text"] {
+  display: flex;
+  align-items: center;
+}
+.textBody {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-size: clamp(18px, 2.4vw, 34px);
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* local selection: Fabric-style handles */
+.handles {
+  position: absolute;
+  inset: -5px;
+  border: 1px solid var(--who-a);
+  opacity: 0;
+  pointer-events: none;
+}
+[data-pane="b"] .handles {
+  border-color: #2f6f5e;
+}
+.handles i {
+  position: absolute;
+  width: 7px;
+  height: 7px;
+  background: var(--paper);
+  border: 1px solid currentColor;
+  color: var(--who-a);
+}
+[data-pane="b"] .handles i {
+  color: #2f6f5e;
+}
+.handles i:nth-child(1) {
+  left: -4px;
+  top: -4px;
+}
+.handles i:nth-child(2) {
+  right: -4px;
+  top: -4px;
+}
+.handles i:nth-child(3) {
+  left: -4px;
+  bottom: -4px;
+}
+.handles i:nth-child(4) {
+  right: -4px;
+  bottom: -4px;
+}
+.shape[data-selected="true"] .handles,
+.shape:focus-visible .handles {
+  opacity: 1;
+}
+
+/* the peer's selection, shown as presence */
+.peerTag {
+  position: absolute;
+  left: -5px;
+  top: -22px;
+  padding: 1px 5px;
+  font-size: 10px;
+  color: var(--ink);
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+.shape[data-peer-selected="true"] {
+  box-shadow: 0 0 0 2px var(--paper), 0 0 0 3px var(--peer, var(--who-b));
+}
+[data-pane="b"] .shape[data-peer-selected="true"] {
+  --peer: var(--who-a);
+}
+[data-pane="a"] .shape[data-peer-selected="true"] {
+  --peer: #2f6f5e;
+}
+.shape[data-peer-selected="true"] .peerTag {
+  opacity: 1;
+}
+
+.cursor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  z-index: 5;
+}
+.cursor svg {
+  fill: var(--who-a);
+  stroke: var(--ink);
+  stroke-width: 0.6;
+}
+.cursor[data-who="b"] svg {
+  fill: #2f6f5e;
+}
+.cursor span {
+  margin-top: 12px;
+  padding: 2px 6px;
+  font-size: 10px;
+  background: var(--who-a);
+  color: var(--ink);
+  white-space: nowrap;
+}
+.cursor[data-who="b"] span {
+  background: #2f6f5e;
+  color: var(--paper);
+}
+
+@media (max-width: 700px) {
+  .panes {
+    grid-template-columns: 1fr;
+  }
+  .tools button {
+    min-height: 44px;
+  }
+}
